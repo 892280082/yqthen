@@ -1,7 +1,7 @@
 yqthen.js
 ====
-写这个流程库的目的不是为了解决异步回调，而是为了最大限度的挖掘js异步
-模型的优势。
+**写这个流程库的目的不是为了解决异步回调，而是为了最大限度的挖掘js异步
+模型的优势。**
 
 **相对于别的库来讲，这个库的API更加简洁优美，代码量更少。**
 
@@ -11,12 +11,10 @@ yqthen.js
 
 
 ## 测试用例
-step1. 向数据库查询10条用户信息。
-step2. 向每个用户发送短信，祝他们51快乐，并且只有当短信全部发送成功才执行 34步。
-step3. 通过新浪接口，查询每个用户发布的微博消息
-step4. 通过QQ接口，查询每个用户发布的说说 
-
-
+1. 向数据库查询10条用户信息。
+2. 向每个用户发送短信，祝他们51快乐，并且只有当短信全部发送成功才执行 34步。
+3. 通过新浪接口，查询每个用户发布的微博消息
+4. 通过QQ接口，查询每个用户发布的说说 
 
 ```js
 var then = require('yqthen');
@@ -57,24 +55,22 @@ then((next)=>{  //step1
 	callback(users);
 })
 .fail((next,err)=>{
-	/**捕获错误*/
-});
-/**一个then链可以有多个fail**/
+	/**捕获错误,可以有多个*/
 });
 ```
 
 ## 执行流程
-1. step1,2 执行有先后顺序。
-2. step2 的each 循环是并发. each参数设置 (Array?,Function,Limit?);
-3. step3 和 step4 在step2执行结束后运行，并且 34是同时并发运行的。
+1. step1最先运行，执行成功后运行 step2.
+2. step2 的each 循环是并发.
+3. step3,4 在step2执行结束后运行，并且34是并发运行的,不存在先后关系。
 4. fail 方法用来捕获异常，一个then链可以有多个fail
 
 ##API
 
-then(Function) -待运行函数
-each(Array?,Function,Limit?) -Array不设置会自动获取next传递的第二个参数 limit可以控制并发数
-go(Function) -一个并发任务链,一个then链里面可以有多个go链。
-fail(Function) -捕获异常
+1. then(Function) -待运行函数
+2. each(Array?,Function,Limit?) -Array不设置会自动获取next传递的第二个参数 limit可以控制并发数
+3. go(Function) -一个并发任务链,一个then链里面可以有多个go链。
+4. fail(Function) -捕获异常
 
 
 
