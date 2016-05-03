@@ -1,0 +1,27 @@
+{
+  "name": "yqthen",
+  "version": "1.0.0",
+  "description": "resolve callback",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "node ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://892280082:a19921129zpf@github.com/892280082/yqthen.git"
+  },
+  "keywords": [
+    "then"
+  ],
+  "author": "yeqin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/892280082/yqthen/issues"
+  },
+  "homepage": "https://github.com/892280082/yqthen#readme"
+}

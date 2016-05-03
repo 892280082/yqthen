@@ -1,5 +1,4 @@
-  // 将 `arguments` 转成数组，效率比 `[].slice.call` 高很多
-  function slice (args, start) {
+  function slice (args, start) { // 将arguments 转成数组
     start = start || 0;
     if (start >= args.length) return [];
     var len = args.length;
@@ -8,11 +7,10 @@
     return ret;
   }
 
-//then 回调函数链对象
 function ThenEntity(){
-	this._arrayFuncs = []; //将要运行的函数队列
-	this._errorFuncs = [];//捕捉错误的函数运行队列
-	this._funcProgress = [];//保存放入纠错函数时，运行函数的状态
+	this._arrayFuncs = []; 
+	this._errorFuncs = [];
+	this._funcProgress = [];
 	this._arrayIndex = 0;
 	this._errorIndex = 0;
 	this._lastArgs = {};
