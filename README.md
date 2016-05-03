@@ -1,68 +1,72 @@
 yqthen.js
 ====
 **写这个流程库的目的不是为了解决异步回调，而是为了最大限度的挖掘js异步
-模型的优势。**
+模型的优势。将js的长处发挥到极致 **
 
 **相对于别的库来讲，这个库的API更加简洁优美，代码量更少。源码也非常简单,diy so easy!**
 
 **具体优势可以看下面的用例**
 
 ## 测试用例
-1. 向数据库查询10条用户信息。
-2. 向每个用户发送短信，祝他们51快乐，并且只有当短信全部发送成功才执行 34步。
-3. 通过新浪接口，查询每个用户发布的微博消息
-4. 通过QQ接口，查询每个用户发布的说说 
+业务要求
+读取一个helloJs.text文件,并将内容保存到'DBXXX'数据库中，
+在将该数据提交给远程服务器,地址http:XXX。
+
+伪代码：
+一般java或php代码的写法
+
+```js
+try{
+
+ file = readFile('helloJs.text'); //读取文件
+ db = DB.open('DBXXX'); //打开数据库
+ db.save(file); //数据库保存数据
+ request('http:xxx',file); //像服务器提交数据
+
+}catch(e){
+	echo e  //捕获异常
+}
+```
+
+代码貌似没有问题，但是这里读取文件和打开数据库的操作是可以同时运行的，
+如果java用实现的话，可能就要使用多线程模型了。
+
+如果用js实现的话，我想大家都会。
+###但是用这个库写出来的代码绝对是最简洁优美的。
 
 ```js
 var then = require('yqthen');
 
-then((next)=>{  //step1
-	db.find((err,users)=>{
-		/**如果next传递了两个以上的参数,则该参数会迭代到下个方法作为参数。
-		直到被下一个符合条件的next覆盖。*/
-		next(err,uers); 
-	});
-})
-.each((next,user)=>{ //step2
-	
-	sendMsgUtil.send(user._id,"51快乐",(err)=>{
+var file,db;
+then.go((next)=>{
+	readFile('helloJs.text',(err,file)=>{ //读取文件
+		file = file;
 		next(err);
-	});
+	})
+}).go((next)=>{
+	DB.open('DBXXX',(err,db)=>{  //打开数据库
+		db = db;
+		next(err);
+	})
+}).then((next)=>{
+	db.save(file,(err)=>{  //数据库保存数据
+		next(err);
+	})
+}).then((next)=>{
+	request('http:xxx',file,(err)=>{ //像服务器提交数据
+		callback(err);
+	})
+}).fail((next,err)=>{
+	callback(err);  //捕获异常
 })
-.go((next,users)=>{ //step3
-
-	then.each(users,(next,user)=>{ 
-		sinaInterface.getNews(user._id,(err,sinaNews)=>{
-			user.sinaNews = sinaNews;
-			next(err);
-		});
-	});
-
-})
-.go((next,users)=>{ //step4
-
-	then.each(users,(next,user)=>{
-		qqInteterface.getNews(user._id,(err,qqNews)=>{
-			user.qqNews = qqNews;
-			next(err);
-		});
-	});
-})
-.then((next,users)=>{
-	callback(users);
-})
-.fail((next,err)=>{
-	/**捕获错误,可以有多个*/
-});
 ```
 
-## 执行流程
-1. step1最先运行，执行成功后运行 step2.
-2. step2 的each 循环是并发.
-3. step3,4 在step2执行结束后运行，并且34是并发运行的,不存在先后关系。
-4. fail 方法用来捕获异常，一个then链可以有多个fail
+虽然用了yqthen框架，但是异步代码还是没有同步代码简洁，这也是没有办法的事，希望js能像
+形式同步更近一点。
 
-##这段代码能比较好的体现js的优势，写的少干的多，活还好。如果这段代码严格用java或者Php来写的话，不论是代码复杂度还是代码量都是要翻番的。希望js能发展的越来越好，改变现在小马拉大车的局面。
+但是我这里读取文件和打开数据库用go链连接，也就说这两个方法是并发的，是同时运行的。只有当
+这两步操作成功后，才会像数据库保存数据，最后在向服务器提交数据。
+
 
 ##API
 1. then(Function) -待运行函数
