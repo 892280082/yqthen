@@ -9,10 +9,14 @@ yqthen.js
 例如下面的例子中
 你需要打开数据库和读取文件，耗时都为100MS；
 如果用下面的promise形式的话，需要200MS才能完成。generator和await也是200MS;
+```js
 then(()=>{ db.open() }).then(()=>{ fs.readFile() })
+```
 
 如果用这个库的go 方法的话 可以并发完成 过程只需要100MS，go链里的方法都是并发运行，当go链运行结束后会继续运行then链。
-then.go(()=>{ db.open() }).go(()=>{ fs.readFile() }).then…
+```js
+then.go(()=>{ db.open() }).go(()=>{ fs.readFile() }).then()..go..each..
+```
 这样简单的处理,程序的性能就拉开了100MS。
 
 
