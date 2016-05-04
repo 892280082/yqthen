@@ -9,20 +9,23 @@ yqthen.js
 
 ## 测试用例
 业务要求
-读取一个helloJs.text文件,并将内容保存到'DBXXX'数据库中，
+读取一个helloJs.text文件,并将内容保存到’DBXXX’数据库中，
 在将该数据提交给远程服务器,地址http:XXX。
+如果提交成功，在把文件转成行，每一行一条记录，存到DBXXX数据库中。
 
 伪代码：
 一般java或php代码的写法
 
 ```js
 try{
-
  file = readFile('helloJs.text'); //读取文件
  db = DB.open('DBXXX'); //打开数据库
  db.save(file); //数据库保存数据
  request('http:xxx',file); //像服务器提交数据
-
+ lines = file.convertLine;//转换成行
+ for(var i=0;i<lines.length;i++){
+  	db.save(lines[i]); //每行一条数据，保存到数据库
+ }
 }catch(e){
 	echo e  //捕获异常
 }
@@ -54,9 +57,17 @@ then.go((next)=>{
 	})
 }).then((next)=>{
 	request('http:xxx',file,(err)=>{ //像服务器提交数据
-		callback(err);
+		next(err);
 	})
-}).fail((next,err)=>{
+}).each(file.convertLine,(next,line)=>{
+	db.save(line,(err)=>{  //每行一条记录保存到数据库
+		next(err);
+	})
+})
+.then((next)=>{
+	callback(null); //操作成功
+})
+.fail((next,err)=>{
 	callback(err);  //捕获异常
 })
 ```
