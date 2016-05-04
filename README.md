@@ -73,6 +73,49 @@ then.go((next)=>{
 })
 ```
 
+这里在特地比较一下async
+
+```js
+async.waterfall([
+	function(callback){
+		async.parallel([
+			function(){ //读取文件
+				readFile('helloJs.text',(err,file)=>{ //读取文件
+					file = file;
+				})
+			},
+			function(){ //打开数据库
+				DB.open('DBXXX',(err,db)=>{  //打开数据库
+					db = db;
+				})
+			}
+		],
+		function(err, results){
+			callback(null, fs, db,callback);
+		});
+	},
+	function(fs, db, callback){
+		request('http:xxx',file,(err)=>{ //像服务器提交数据
+			callback(null,fs,db);
+		})
+	},
+	function(fs,db, callback){
+		async.eachSeries(fs.convertLine, function iteratee(line, callback) {
+			db.save(line,(err)=>{  //每行一条记录保存到数据库
+				callback(err);
+			})
+		});
+	}
+], function (err, result) {
+	console.log(err,result);
+});
+```
+
+
+
+
+
+
 虽然用了yqthen框架，但是异步代码还是没有同步代码简洁，这也是没有办法的事，希望js能像
 形式同步更近一点。
 
