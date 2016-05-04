@@ -42,25 +42,30 @@ try{
 var then = require('yqthen');
 
 var file,db;
-then.go((next)=>{
+then
+.go((next)=>{
 	readFile('helloJs.text',(err,file)=>{ //读取文件
 		file = file;
 		next(err);
 	})
-}).go((next)=>{
+})
+.go((next)=>{
 	DB.open('DBXXX',(err,db)=>{  //打开数据库
 		db = db;
 		next(err);
 	})
-}).then((next)=>{
+})
+.then((next)=>{
 	db.save(file,(err)=>{  //数据库保存数据
 		next(err);
 	})
-}).then((next)=>{
+})
+.then((next)=>{
 	request('http:xxx',file,(err)=>{ //像服务器提交数据
 		next(err);
 	})
-}).each(file.convertLine,(next,line)=>{
+})
+.each(file.convertLine,(next,line)=>{
 	db.save(line,(err)=>{  //每行一条记录保存到数据库
 		next(err);
 	})
