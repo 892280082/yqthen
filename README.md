@@ -73,8 +73,7 @@ then.go((next)=>{
 })
 ```
 
-这里在特地比较一下async
-
+###这里在特地比较一下async
 ```js
 async.waterfall([
 	function(callback){
