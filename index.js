@@ -8,12 +8,13 @@
   }
 
 function ThenEntity(){
-	this._arrayFuncs = []; 
+	this._arrayFuncs = [];
 	this._errorFuncs = [];
 	this._funcProgress = [];
 	this._arrayIndex = 0;
 	this._errorIndex = 0;
 	this._lastArgs = {};
+	this._doneFunc = null;
 
 	this._init = function(func){
 		func = func || function(next){next()};
@@ -29,28 +30,36 @@ function ThenEntity(){
 
 	this._defer = function(err){
 
+
 		var args = slice(arguments);
-		err = args.shift();
-		if(args.length > 0){
+		err = args.shift(); //去掉第一个占位的err
+
+		if(args.length > 0){ //如果有参数传递，保存这些参数
 			this._lastArgs = args;
-		}else if(this._lastArgs.length>0){
+		}else if(this._lastArgs.length>0){//如果没有参数，使用之前保存的参数
 			this._lastArgs.shift();
 			args = this._lastArgs;
 		}
 
-		var nextFunc;
-		if(!err){
-		 	nextFunc = this._arrayFuncs[this._arrayIndex++];
-		}else{
-			args.unshift(err);
-			this._arrayIndex = this._funcProgress.shift();
-			nextFunc = this._errorFuncs[this._errorIndex++];
-		}
+		var nextFunc = this._arrayFuncs[this._arrayIndex];
 
-		if(nextFunc){
+		if(nextFunc === 'done'){
+ 			args.unshift(err);
+ 			return this._doneFunc.apply(null,args);
+ 		}
+
+ 		if(!err){
+ 			nextFunc = this._arrayFuncs[this._arrayIndex++];
+ 		}else{
+			args.unshift(err);
+			this._arrayIndex = this._funcProgress.shift();//获取下次运行的方法的下表
+			nextFunc = this._errorFuncs[this._errorIndex++];
+ 		}
+
+ 		if(nextFunc){
 			args.unshift(this._defer);
 			nextFunc.apply(null,args);
-		}
+ 		}
 
 	}.bind(this);
 	
@@ -87,6 +96,11 @@ function ThenEntity(){
 		return thenGo;
 
 	}.bind(this);
+
+	this.done = function(func){
+		this._doneFunc = func;
+		return this.then('done');
+	};
 
 }
 
@@ -171,3 +185,12 @@ ThenStart.each = function(array,func){
 };
 
 module.exports = ThenStart;
+
+/**
+添加done方法。
+.done((err,args...)=>{  }); //终结方法，当运行完这个方法的时候结束then链。
+
+_.defer方法需要重写
+
+
+*/
