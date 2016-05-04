@@ -78,7 +78,7 @@ then.go((next)=>{
 ```js
 async.waterfall([
 	function(callback){
-		async.parallel([
+		async.parallel([ //并行运行
 			function(){ //读取文件
 				readFile('helloJs.text',(err,file)=>{ //读取文件
 					file = file;
@@ -100,19 +100,17 @@ async.waterfall([
 		})
 	},
 	function(fs,db, callback){
-		async.eachSeries(fs.convertLine, function iteratee(line, callback) {
+		async.eachSeries(fs.convertLine, function iteratee(line, callback) { //循环并发
 			db.save(line,(err)=>{  //每行一条记录保存到数据库
 				callback(err);
 			})
 		});
 	}
 ], function (err, result) {
-	console.log(err,result);
+	console.log(err,result);  
 });
+//我已经被这个嵌套搞崩溃了！！！
 ```
-
-
-
 
 
 
