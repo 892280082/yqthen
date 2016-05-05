@@ -30,7 +30,6 @@ function ThenEntity(){
 
 	this._defer = function(err){
 
-
 		var args = slice(arguments);
 		err = args.shift(); //去掉第一个占位的err
 
@@ -44,8 +43,12 @@ function ThenEntity(){
 		var nextFunc = this._arrayFuncs[this._arrayIndex];
 
 		if(nextFunc === 'done'){
+			if(!this._doneFunc)
+				return;
  			args.unshift(err);
- 			return this._doneFunc.apply(null,args);
+ 			var _this =   this._doneFunc.apply(null,args);
+ 			this._doneFunc = null;
+ 			return _this;
  		}
 
  		if(!err){
@@ -100,7 +103,7 @@ function ThenEntity(){
 	this.done = function(func){
 		this._doneFunc = func;
 		return this.then('done');
-	};
+	}.bind(this);
 
 }
 
@@ -110,6 +113,7 @@ function ThenGoEntity (func,parent){
 	this.parent = parent;
 	this.then = parent.then;
 	this.fail = parent.fail;
+	this.done = parent.done;
 
 	this._next = function(err){
 		if(err)
@@ -143,6 +147,7 @@ function ThenEachEntity (array,itretor,parent){
 	this._nextCount = 0;
 	this.parent = parent;
 	this.fail = parent.fail;
+	this.done = parent.done;
 
 	this._selfNext = function(err){
 
