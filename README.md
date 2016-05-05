@@ -7,7 +7,6 @@ yqthen.js
 
 ## 下面的用例分别用 async 和 yqthen实现。
 
-业务要求
 1. 读取一个helloJs.text文件,并将内容保存到’DBXXX’数据库中，
 2. 在将该数据提交给远程服务器,地址http:XXX。
 3. 如果提交成功，在把文件转成行，每一行一条记录，存到DBXXX数据库中。
