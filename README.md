@@ -42,7 +42,7 @@ then
 	db.save(line,(err)=>{  //每行一条记录保存到数据库
 		next(err);
 	})
-})
+},20) //最大并发20
 .then((next)=>{
 	callback(null); //操作成功
 })
@@ -91,7 +91,7 @@ async.waterfall([
 
 ##API
 1. then(Function) -待运行函数
-2. each(Array?,Function,Limit?) -Array不设置会自动获取next传递的第二个参数 limit可以控制并发数.limit这版本为实现。
+2. each(Array?,Function,Limit?) -Array不设置会自动获取next传递的第二个参数 
 3. go(Function) -一个并发任务链,一个then链里面可以有多个go链。
 4. fail(Function) -捕获异常
 5. done(err,args) -结束方法

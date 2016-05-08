@@ -1,3 +1,9 @@
+	var Debug = function (){
+		var args = Array.prototype.slice.call(arguments);
+		args.unshift('yqthen Error:');
+		console.log.apply(console,args);
+	};
+
   function slice (args, start) { // 将arguments 转成数组
     start = start || 0;
     if (start >= args.length) return [];
@@ -81,13 +87,18 @@ function ThenEntity(){
 
 	}.bind(this);
 
-	this.each=function(array,func){
-		if(!func){
+	this.each=function(array,func,limit){
+
+		var thenEachPojo ;
+		if(array instanceof Array){
+			limit = limit || 0;
+			thenEachPojo = new ThenEachEntity(array,func,this,limit);
+		}else{
+			limit = func || 0;
 			func = array;
 			array = null;
+			thenEachPojo = new ThenEachEntity(array,func,this,limit);
 		}
-
-		var thenEachPojo = new ThenEachEntity(array,func,this);
 		return this.then(thenEachPojo.start);
 
 	}.bind(this);
@@ -141,21 +152,29 @@ function ThenGoEntity (func,parent){
 }
 
 
-function ThenEachEntity (array,itretor,parent){
+/**
+*/
+function ThenEachEntity (array,itretor,parent,limit){
 	this._array = array;
 	this._itretor = itretor;
 	this._nextCount = 0;
 	this.parent = parent;
 	this.fail = parent.fail;
 	this.done = parent.done;
+	this._limit = limit;
+	this._total = 0;
 
 	this._selfNext = function(err){
 
 		if(err)
 			return this.parent._defer(err);
 
-		if(++this._nextCount === this._array.length)
+		if(++this._nextCount >= this._total)
 			return this.parent._defer();
+
+		if(this._limit && this._array.length > 0){
+			this._itretor(this._selfNext,this._array.shift(),this._limit+this._nextCount-1);
+		}
 
 	}.bind(this);
 
@@ -164,10 +183,27 @@ function ThenEachEntity (array,itretor,parent){
 		if(!this._array)
 			this._array = this.parent._lastArgs[1];
 
+		this._total = this._array.length;
+
+		if(this._limit >= this._array.length)
+			this._limit = 0;
+
 		var _this = this;
-		_this._array.forEach(function(value,index){
-			_this._itretor(_this._selfNext,value,index);
-		});
+
+		if(this._limit){
+
+			var initArray = this._array.splice(0,this._limit);
+			initArray.forEach(function(value,index){
+				_this._itretor(_this._selfNext,value,index);
+			});
+
+		}else{
+
+			_this._array.forEach(function(value,index){
+				_this._itretor(_this._selfNext,value,index);
+			});
+
+		}
 
 	}.bind(this);
 }
@@ -190,12 +226,3 @@ ThenStart.each = function(array,func){
 };
 
 module.exports = ThenStart;
-
-/**
-添加done方法。
-.done((err,args...)=>{  }); //终结方法，当运行完这个方法的时候结束then链。
-
-_.defer方法需要重写
-
-
-*/
