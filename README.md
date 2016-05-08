@@ -89,7 +89,9 @@ async.waterfall([
 //我已经被这个嵌套搞崩溃了！！！
 ```
 
-##API
+
+
+##API   (API已经稳定，本人已经用于项目中。)
 1. then(Function) -待运行函数
 2. each(Array?,Function,Limit?) -Array不设置会自动获取next传递的第二个参数 
 3. go(Function) -一个并发任务链,一个then链里面可以有多个go链。
@@ -97,5 +99,5 @@ async.waterfall([
 5. done(err,args) -结束方法
 
 QQ 892280082 逐梦  
-PS: 名字非主流，但是好多年不想换了,各位客官忍忍。这个库还在改进中，最好不要直接使用。
+PS: 名字非主流，但是好多年不想换了,各位客官忍忍。
 
