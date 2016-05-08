@@ -220,9 +220,9 @@ ThenStart.go = function(func){
 	return then.go(func);
 };
 
-ThenStart.each = function(array,func){
+ThenStart.each = function(array,func,limit){
 	var then = this();
-	return then.each(array,func);
+	return then.each(array,func,limit);
 };
 
 module.exports = ThenStart;
