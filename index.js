@@ -162,18 +162,19 @@ function ThenEachEntity (array,itretor,parent,limit){
 	this.fail = parent.fail;
 	this.done = parent.done;
 	this._limit = limit;
-	this._total = 0;
 
 	this._selfNext = function(err){
 
 		if(err)
 			return this.parent._defer(err);
 
-		if(++this._nextCount >= this._total)
+		if(++this._nextCount >= this._array.length)
 			return this.parent._defer();
 
-		if(this._limit && this._array.length > 0){
-			this._itretor(this._selfNext,this._array.shift(),this._limit+this._nextCount-1);
+		if(this._limit){
+			var nextIndex =  this._nextCount+this._limit -1;
+			if(nextIndex < this._array.length)
+				this._itretor(this._selfNext,this._array[nextIndex],nextIndex);
 		}
 
 	}.bind(this);
@@ -183,7 +184,9 @@ function ThenEachEntity (array,itretor,parent,limit){
 		if(!this._array)
 			this._array = this.parent._lastArgs[1];
 
-		this._total = this._array.length;
+		if(this._array.length === 0)
+			return this.parent._defer(); 
+
 
 		if(this._limit >= this._array.length)
 			this._limit = 0;
@@ -192,10 +195,13 @@ function ThenEachEntity (array,itretor,parent,limit){
 
 		if(this._limit){
 
-			var initArray = this._array.splice(0,this._limit);
-			initArray.forEach(function(value,index){
-				_this._itretor(_this._selfNext,value,index);
-			});
+			// var initArray = this._array.splice(0,this._limit);
+			// initArray.forEach(function(value,index){
+			// 	_this._itretor(_this._selfNext,value,index);
+			// });
+			for(var i=0;i<this._limit;i++){
+				_this._itretor(_this._selfNext,this._array[i],i);
+			}
 
 		}else{
 
