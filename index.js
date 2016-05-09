@@ -195,10 +195,6 @@ function ThenEachEntity (array,itretor,parent,limit){
 
 		if(this._limit){
 
-			// var initArray = this._array.splice(0,this._limit);
-			// initArray.forEach(function(value,index){
-			// 	_this._itretor(_this._selfNext,value,index);
-			// });
 			for(var i=0;i<this._limit;i++){
 				_this._itretor(_this._selfNext,this._array[i],i);
 			}
