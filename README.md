@@ -3,6 +3,11 @@ yqthen.js
 ###API已经稳定，本人已经用于项目中。
 ###如果出现bug，请npm update yqthen 升级到最新版。
 
+#usage
+```bin
+npm install yqthen
+```
+
 ###习惯async的同学不妨试一试这个库，让你的代码更加清爽。
 * async 常用的API在这里都可以进行链式调用，并且API更加友好。
 * go 简单暴力的实现多任务并发。
