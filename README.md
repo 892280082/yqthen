@@ -47,10 +47,10 @@ then
 })
 .then((next)=>{
 	request('http:xxx',file,(err)=>{ //像服务器提交数据
-		next(err);
+		next(err,file.convertLine);
 	})
 })
-.each(file.convertLine,(next,line)=>{
+.each((next,line)=>{
 	db.save(line,(err)=>{  //每行一条记录保存到数据库
 		next(err);
 	})
