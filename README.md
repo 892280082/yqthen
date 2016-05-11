@@ -2,6 +2,9 @@ yqthen.js
 ====
 ###API已经稳定，本人已经用于项目中。
 ###如果出现bug，请npm update yqthen 升级到最新版。1.50
+###这个demo是这个库比较好的实践，最大化发挥了nodejs的性能。
+
+[demo演示](https://github.com/892280082/yqthen_fs_eample) 
 
 #usage
 ```bin
