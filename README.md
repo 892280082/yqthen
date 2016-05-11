@@ -1,7 +1,7 @@
 yqthen.js
 ====
 ###API已经稳定，本人已经用于项目中。
-###如果出现bug，请npm update yqthen 升级到最新版。
+###如果出现bug，请npm update yqthen 升级到最新版。1.50
 
 #usage
 ```bin

@@ -123,6 +123,7 @@ function ThenGoEntity (func,parent){
 	this._nextCount = 0;
 	this.parent = parent;
 	this.then = parent.then;
+	this.each = parent.each;
 	this.fail = parent.fail;
 	this.done = parent.done;
 
@@ -161,6 +162,7 @@ function ThenEachEntity (array,itretor,parent,limit){
 	this.parent = parent;
 	this.fail = parent.fail;
 	this.done = parent.done;
+	this.go = parent.go;
 	this._limit = limit;
 
 	this._selfNext = function(err){
